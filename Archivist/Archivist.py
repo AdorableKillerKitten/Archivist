@@ -121,10 +121,62 @@ class ArchiverGUI(ttk.Frame):
         pass 
 
 
+class Editor(ttk.Frame):
+    
+    def __init__(self, master):
+
+        self.company = ''
+        self.purchase = ''
+        self.condition = ''
+        self.source = ''
+        self.projects = ''
+        
+
+        super().__init__(master)
+        self.master = master 
+        self.title = "Editor"
+        self.grid(column=0, row=0)
+        #Labels 
+
+        self.company_lbl = ttk.Label(self,text='Company')
+        self.purchase_lbl = ttk.Label(self,text='Date of Purchase')
+        self.condition_lbl = ttk.Label(self,text='Current condition')
+        self.source_lbl = ttk.Label(self,text='Source')
+        self.projects_lbl = ttk.Label(self,text='Projects')
+
+        # Associated Entry widgets 
+
+        self.company_ent = ttk.Entry(self, textvariable=self.company)
+        self.purchase_ent = ttk.Entry(self, textvariable=self.purchase)
+        self.condition_ent = ttk.Entry(self, textvariable=self.condition)
+        self.source_ent = ttk.Entry(self, textvariable=self.source)
+        self.projects_ent = ttk.Entry(self, textvariable=self.projects)
+
+        self.info_txt = Text(self, width = 30, height=8)
+
+        save_btn = ttk.Button(self, text="Save")
+
+        self.company_lbl.grid(column=0,row=0)
+        self.purchase_lbl.grid(column=0,row=1) 
+        self.condition_lbl.grid(column=0,row=2)
+        self.source_lbl.grid(column=0,row=3) 
+        self.projects_lbl.grid(column=0,row=4) 
+
+        self.company_ent.grid(column=1,row=0) 
+        self.purchase_ent.grid(column=1,row=1) 
+        self.condition_ent.grid(column=1,row=2) 
+        self.source_ent.grid(column=1,row=3) 
+        self.projects_ent.grid(column=1,row=4)
+        
+        self.info_txt.grid(column=2, row=0)
+
+
+
 
 root = Tk() 
+root2 = Tk()
 root.bind_all("<Button-1>", lambda e: focus(e))
-
+edit = Editor(root2)
 interface = ArchiverGUI(master=root)
 interface.mainloop();
 
