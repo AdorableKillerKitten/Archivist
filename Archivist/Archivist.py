@@ -16,6 +16,11 @@ import sqlite3
 # function to parse searchbar
 # searchterm seperated by blank spaces 
 # iterate over string and return a list of search terms 
+
+def focus(event):
+    widget = root.focus_get()
+    print(widget, " has focus")
+
 class Item:
     def __init__(self, name, id):
         self.name = name
@@ -26,31 +31,33 @@ class Item:
         print(self.id)
 
 
-class ArchiverGUI:
+class ArchiverGUI(ttk.Frame):
 
     
 
     def __init__(self,master):
+        super().__init__(master)
         self.items = []
         self.master = master
         master.title("Archivist")
         self.searchTxt = ''
-        self.mainFrame = Frame(root); 
+         
         
-        self.mainFrame.grid(column=0, row=0)
+        self.grid(column=0, row=0)
 
-        self.searchbar = ttk.Entry(self.mainFrame, validate="key", textvariable=self.searchTxt)
-        self.search_btn = ttk.Button(self.mainFrame, text="Search", command=self.searchFor)
-        self.name_txt = ttk.Label(self.mainFrame, text="Name")
-        self.id_txt = ttk.Label(self.mainFrame, text="ID")
-        self.name_ent =  ttk.Entry(self.mainFrame)
-        self.id_ent =  ttk.Entry(self.mainFrame)
+        self.searchbar = ttk.Entry(self, validate="key", textvariable=self.searchTxt)
+        self.search_btn = ttk.Button(self, text="Search", command=self.searchFor)
+        self.name_txt = ttk.Label(self, text="Name")
+        self.id_txt = ttk.Label(self, text="ID")
+        self.name_ent =  ttk.Entry(self)
+        self.id_ent =  ttk.Entry(self)
 
-        #self.master.bind("<Return>", self.searchFor)
-        self.master.bind("<Return>", self.updateEntry)
+        self.master.bind("<Return>", self.searchFor)
+        #self.master.bind("<<ListboxSelect>>", self.updateEntry)
 
-        self.scroll_list  = Listbox(self.mainFrame, height=5)
-        self.scroll_list.bind("<<ListBoxSelect>>", self.updateEntry)
+        self.scroll_list  = Listbox(self, height=5)
+        self.scroll_list.bind("<<ListboxSelect>>", self.updateEntry)
+        
         self.searchbar.grid(column=0,row=0, columnspan=2)
         self.search_btn.grid(column=2,row=0)
 
@@ -60,7 +67,7 @@ class ArchiverGUI:
         self.id_ent.grid(column=1, row=2)
         self.scroll_list.grid(column=2, row=1, rowspan=2)
 
-        self.mainFrame.focus_set()
+        
         
 
     def parseSearch(self,searchTerms):
@@ -102,8 +109,11 @@ class ArchiverGUI:
             index +=1
 
     def updateEntry(self,event=None):
+        cursorSel = int(self.scroll_list.curselection()[0])
+        if( cursorSel > len(self.items)-1 or cursorSel < 0):
+            return
         print(self.scroll_list.curselection())
-        item = self.items[int(self.scroll_list.curselection()[0])]
+        item = self.items[cursorSel]
         self.name_ent.delete(0,END)
         self.id_ent.delete(0,END)
         self.name_ent.insert(0,item.name)
@@ -113,11 +123,12 @@ class ArchiverGUI:
 
 
 root = Tk() 
+root.bind_all("<Button-1>", lambda e: focus(e))
 
-interface = ArchiverGUI(root)
+interface = ArchiverGUI(master=root)
+interface.mainloop();
 
 
 
 
-root.mainloop();
 
